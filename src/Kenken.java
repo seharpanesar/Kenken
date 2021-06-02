@@ -33,6 +33,12 @@ public class Kenken {
 
         int i = 0;
 
+        DFS dfs = new DFS(n, cellGrid);
+        boolean solnExists = dfs.runBacktracking(0);
+        if (solnExists) {
+            System.out.println();
+        }
+
         while (true) {
             // narrowing candidates strategies
             removeCandidateStrat1(); // see comment above function header to understand the strategy
@@ -51,6 +57,8 @@ public class Kenken {
             }
             i++;
         }
+
+
     }
 
     /* This function iterates through all cages. If all cells in a particular cage have the same value in the cannotBe list
@@ -422,7 +430,7 @@ public class Kenken {
         }
     }
 
-    private boolean addValid(int target, ArrayList<Integer> candidate) {
+    public static boolean addValid(int target, ArrayList<Integer> candidate) {
         int sum = 0;
         for (Integer integer : candidate) {
             sum += integer;
@@ -430,14 +438,14 @@ public class Kenken {
         return sum == target;
     }
 
-    private boolean subValid(int target, ArrayList<Integer> candidate) {
+    public static boolean subValid(int target, ArrayList<Integer> candidate) {
         /* for subtraction there must be ONLY 2 ints in candidate. Therefore we can assume that the 0th and 1st index
           are not empty
          */
         return (Math.abs(candidate.get(0) - candidate.get(1)) == target);
     }
 
-    private boolean multiValid(int target, ArrayList<Integer> candidate) {
+    public static boolean multiValid(int target, ArrayList<Integer> candidate) {
         int prod = 1;
         for (Integer integer : candidate) {
             prod *= integer;
@@ -445,7 +453,7 @@ public class Kenken {
         return prod == target;
     }
 
-    private boolean divValid(int target, ArrayList<Integer> candidate) {
+    public static boolean divValid(int target, ArrayList<Integer> candidate) {
         /* for subtraction there must be ONLY 2 ints in candidate. therefore we can assume that the 0th and 1st index
           are not empty. Also, must be aware of integer division, which is why they are casted to floats
          */
@@ -522,6 +530,6 @@ public class Kenken {
     }
 
     public static void main(String[] args) throws IOException {
-        new Kenken("C:/Users/sehar/IdeaProjects/Kenken/tests/Test2");
+        new Kenken("C:/Users/sehar/IdeaProjects/Kenken/tests/Test1");
     }
 }

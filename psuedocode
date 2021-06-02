@@ -1,0 +1,79 @@
+Kenken: a brand name for a numerical logic puzzle printed on a grid subdivided into clusters of squares, or cages,
+the object of which is to fill in the squares so that each column and row do not repeat digits, and all
+the numbers within a cage combine together using the specified arithmetic operation to equal a target number.
+
+Kenken class {
+    fields:
+    Arraylist <Cages>
+    n by n array of Cells
+    - Taking in input:
+        - Scan input from formatted text input files
+        - Example of formatted file:
+        a a b b
+        c d e e
+        c d f g
+        c h f g
+
+        a 2/
+        b 1-
+        c 12*
+        d 2-
+        e 3-
+        f 1-
+        g 5+
+        h 3f
+
+        The above example is a 4x4 Kenken. The first part of the text file is a nxn grid of cells. In each cell, there
+        is a char. This char represents a number and an operator as described second part of the text file.
+        If there an 'f' in the operator spot, it indicates a freebie - meaning no operator. Freebies are always in 1 cell.
+
+        Once input is processed, this is the strategy:
+
+        - find all candidates for all cells
+        while (unsolved) {
+            - identify solved cells (how? see below):
+                - add that value to the cannotBe field of neighboring cells
+                - remove candidates that use that value
+        }
+
+
+
+        How to identify solved cells:
+            - Obviously, cells with single candidates are solved.
+            -
+
+
+
+
+}
+
+Cage class {
+    - I defining a cage to be a set of cells that together, using arithmetic, will result in a target number. An example
+      of this is the 3 12* cells in the above example.
+
+    fields:
+    ArrayList<Cell> cells // the composing cells
+    Arraylist<Arraylist<Integer>> candidates; // the possible sets of values to complete the cage
+
+    empty Constructor
+
+    Constructor
+        - ArrayList<Cell> cells
+
+
+}
+
+Cell class {
+    fields:
+    - int xp (i position in table. 0-3)
+    - int yp (j position in table. 0-3)
+    - Arraylist<Integer> cannotBe (list of numbers that can NOT be the solution of the cell)
+    - int targetVal (Arithmetic will result in this number)
+    - char operation (type of arithmetic)
+    - int finalVal (solution for that cell)
+
+    Constructor
+        - int xp , int yp, int targetVal, char operation
+
+}
+

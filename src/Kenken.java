@@ -15,239 +15,28 @@ public class Kenken {
         System.out.printf("Time: %d ms\n", timeE-timeS);
     }
 
-    private void printCurrentSolution() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.printf("%d ", cellGrid[i][j].getSolution());
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
     private void fillAnswerGrid() {
         // setting candidates and find freebies
         for (Cage cage : cages) {
             cage.setCandidates(candidatesAndFreebies(cage));
         }
 
-        int i = 0;
-
         DFS dfs = new DFS(n, cellGrid);
         boolean solnExists = dfs.runBacktracking(0);
         if (solnExists) {
-            System.out.println();
-        }
-
-        while (true) {
-            // narrowing candidates strategies
-            removeCandidateStrat1(); // see comment above function header to understand the strategy
-            printCurrentSolution();
-            removeCandidateStrat2();
-            printCurrentSolution();
-
-            // identifying solution strategies
-            identifySolutionStrat1();
-            printCurrentSolution();
-            identifySolutionStrat2();
-            printCurrentSolution();
-
-            if (i == 3) {
-                break;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    System.out.printf("%d ", dfs.solution[i][j]);
+                }
+                System.out.println();
             }
-            i++;
         }
-
 
     }
 
     /* This function iterates through all cages. If all cells in a particular cage have the same value in the cannotBe list
      * AND a candidate in the cage uses that cannotBe value, remove that candidate.
      */
-
-    private void removeCandidateStrat1() {
-        for (Cage cage : cages) {
-            ArrayList<Integer> cannotBe = cage.getCells().get(0).getCannotBe();
-            ArrayList<Cell> cells = cage.getCells();
-
-            ArrayList<ArrayList<Integer>> candidates = cage.getCandidates();
-
-            ArrayList<ArrayList<Integer>> candidatesToRemove = new ArrayList<>(); // every int placed in this CANNOT exist within the cage
-
-            for (Integer integer : cannotBe) {
-                boolean continueFlag = true;
-                for (Cell cell : cells) {
-                    if (!cell.getCannotBe().contains(integer)) {
-                        continueFlag = false;
-                        break;
-                    }
-                }
-
-                // if some cells do not have "integer" in cannotBe, we skip to the next integer.
-                if (!continueFlag) {
-                    continue;
-                }
-
-                for (ArrayList<Integer> candidate : candidates) {
-                    if (candidate.contains(integer)) {
-                        candidatesToRemove.add(candidate);
-                    }
-                }
-            }
-
-            // nothing to remove
-            if (candidatesToRemove.size() == 0) {
-                continue;
-            }
-
-            for (ArrayList<Integer> toRemove : candidatesToRemove) {
-                cage.removeCandidate(toRemove);
-            }
-        }
-    }
-
-    /* If a cell indicates that it cannot be x and it cannot be y and (x,y) is a candidate for its cage, remove that
-     * candidate.
-     */
-
-    private void removeCandidateStrat2() {
-        // lots of nested for loops, but it isn't too inefficient because the size of the arrays aren't big
-        for (Cage cage: cages) {
-            ArrayList<ArrayList<Integer>> candidates = cage.getCandidates();
-            ArrayList<Cell> cells = cage.getCells();
-
-            ArrayList<ArrayList<Integer>> candidatesToRemove = new ArrayList<>();
-
-            for (Cell cell : cells) {
-                for (ArrayList<Integer> candidateArray : candidates) {
-                    boolean removeCandidate = true;
-                    for (Integer candidateElement : candidateArray) {
-                        if (!cell.getCannotBe().contains(candidateElement)) {
-                            removeCandidate = false;
-                            break;
-                        }
-                    }
-
-                    /* if all candidates elements within a candidate array exist in the cannotBe of a cell, we
-                     * must remove that candidate from the cage.
-                     */
-
-                    if (removeCandidate) {
-                        candidatesToRemove.add(candidateArray);
-                    }
-                }
-            }
-
-            /* actually removing that candidate. If we removed if in the above loop, there would have been a
-               concurrent mod exception thrown
-             */
-            for (ArrayList<Integer> toRemove : candidatesToRemove) {
-                cage.removeCandidate(toRemove);
-            }
-        }
-    }
-
-    /* For every row and column in cellGrid, this function will iterate from i = 1 -> n and scan how many times i shows
-     * up in the candidates of each cell within the row/column. If i only appears once in all cell candidates, i must be
-     * the solution for the cell it appears in
-     */
-
-    private void identifySolutionStrat1() {
-        // scanning row by row
-        for (int i = 0; i < n; i++) {
-            for (int maybeOnlyCand = 1; maybeOnlyCand <= n; maybeOnlyCand++) {
-                boolean alreadySolvedFlag = false;
-                int count = 0;
-                Cell lastSeenIn = null;
-                for (int j = 0; j < n; j++) {
-                    if (cellGrid[i][j].getSolution() == maybeOnlyCand) { // if maybeOnlyCand is solved for this row, skip to next maybeOnlyCan
-                        alreadySolvedFlag = true;
-                        break;
-                    }
-                    ArrayList<ArrayList<Integer>> cellCandidates = cellGrid[i][j].getRespCage().getCandidates();
-                    for (ArrayList<Integer> candidate : cellCandidates) {
-                        if (candidate.contains(maybeOnlyCand)) {
-                            count++;
-                            lastSeenIn = cellGrid[i][j];
-                            break;
-                        }
-                    }
-                    if (count > 1) { // optimization to save some iterations
-                        break;
-                    }
-                }
-                if (alreadySolvedFlag) { // no need to iterate through row for this maybeOnlyCandidate, so skip
-                    continue;
-                }
-                if (count == 1 && lastSeenIn.getSolution() == 0) { // solution found
-                    setSoln(maybeOnlyCand, lastSeenIn);
-                }
-            }
-        }
-
-        //scanning column by column
-        for (int i = 0; i < n; i++) {
-            for (int maybeOnlyCand = 1; maybeOnlyCand <= n; maybeOnlyCand++) {
-                boolean alreadySolvedFlag = false;
-                int count = 0;
-                Cell lastSeenIn = null;
-                for (int j = 0; j < n; j++) {
-                    if (cellGrid[j][i].getSolution() == maybeOnlyCand) { // if maybeOnlyCand is solved for this row, skip to next maybeOnlyCan
-                        alreadySolvedFlag = true;
-                        break;
-                    }
-                    // condition is DIFFERENT FROM ABOVE: [j][i] instead of [i][j]. this allows column traversal instead of row traversal.
-                    ArrayList<ArrayList<Integer>> cellCandidates = cellGrid[j][i].getRespCage().getCandidates();
-                    for (ArrayList<Integer> candidate : cellCandidates) {
-                        if (candidate.contains(maybeOnlyCand)) {
-                            count++;
-                            lastSeenIn = cellGrid[j][i];
-                            break; // dont want to count a a candidate twice. Ex. if a cell has (1,2) and (2,4) as candidates, 2 should only be counted once.
-                        }
-                    }
-                    if (count > 1) {
-                        break;
-                    }
-                }
-                if (alreadySolvedFlag) {
-                    continue;
-                }
-                if (count == 1 && lastSeenIn.getSolution() == 0) {
-                    setSoln(maybeOnlyCand, lastSeenIn);
-                }
-            }
-        }
-    }
-
-    /* Process of elimination:
-     *  1) If a cell has n-1 distinct cannotBe's, the solution must be the missing value.
-     *  2) If a cell has a set of candidates and all but 1 of the candidate elements are included in the cannotBe,
-     *     the solution must be the missing value.
-     */
-
-    private void identifySolutionStrat2() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                Cell cell = cellGrid[i][j];
-                if (cell.getSolution() != 0) { // solution is already found, so skip
-                    continue;
-                }
-
-                ArrayList<Integer> cannotBe = cell.getCannotBe();
-
-                if (cell.getCannotBe().size() == n - 1) { // there are n-1 cannotBes. if true, we need to find the missing value
-                    // finding missing value by totalSum - cannotBe sum
-                    int totalSum = n*(n+1)/2;
-                    int cannotBeSum = 0;
-                    for (Integer integer : cannotBe) {
-                        cannotBeSum += integer;
-                    }
-                    int solution = totalSum - cannotBeSum;
-                    setSoln(solution, cell);
-                }
-            }
-        }
-    }
 
     private ArrayList<ArrayList<Integer>> candidatesAndFreebies(Cage cage) {
         ArrayList<ArrayList<Integer>> candidates = new ArrayList<>();
@@ -311,7 +100,7 @@ public class Kenken {
         assert cells.size() > 2;
 
         int initX = cells.get(0).getXp();
-        int initY = cells.get(1).getYp();
+        int initY = cells.get(0).getYp();
 
         for (int i = 1; i < cells.size(); i++) {
             Cell cell = cells.get(i);
@@ -530,6 +319,6 @@ public class Kenken {
     }
 
     public static void main(String[] args) throws IOException {
-        new Kenken("C:/Users/sehar/IdeaProjects/Kenken/tests/Test1");
+        new Kenken("C:/Users/sehar/IdeaProjects/Kenken/tests/Test3");
     }
 }

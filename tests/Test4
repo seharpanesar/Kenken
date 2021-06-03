@@ -1,0 +1,29 @@
+a a b b c d d
+e a b c c f f
+e g g h h i j
+e k l h m m j
+n k l p p q r
+n s t p v q r
+o s t t u u u
+
+a 168*
+b 11+
+c 10+
+d 2-
+e 11+
+f 3/
+g 2-
+h 126*
+i 4f
+j 4-
+k 5-
+l 1-
+m 4-
+n 1-
+o 5f
+p 10*
+q 1-
+r 1-
+s 3/
+t 13+
+u 13+

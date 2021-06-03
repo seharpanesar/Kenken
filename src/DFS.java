@@ -4,7 +4,7 @@ public class DFS {
     private int n;
     private Cell[][] cellGrid;
     private int[] prospectiveSoln;
-    private int[][] solution;
+     int[][] solution;
 
     public DFS(int n, Cell[][] cellGrid) {
         this.n = n;
@@ -26,81 +26,23 @@ public class DFS {
 
         //recursive backtracking
 
-        // if 1 is available, place into prospectiveSoln and move on
-        if (isAvailable(1, stackNum)) {
-            prospectiveSoln[stackNum] = 1;
-            if (cageIsClosed(stackNum)) {
-                if (isValidArithmetic(stackNum)) {
+        // if i is available, place into prospectiveSoln and move on
+        for (int i = 1; i <= n; i++) {
+            if (isAvailable(i, stackNum)) {
+                prospectiveSoln[stackNum] = i;
+                if (cageIsClosed(stackNum)) {
+                    if (isValidArithmetic(stackNum)) {
+                        boolean solnFound = runBacktracking(stackNum + 1);
+                        if (solnFound) {
+                            return true;
+                        }
+                    }
+                }
+                else {
                     boolean solnFound = runBacktracking(stackNum + 1);
                     if (solnFound) {
                         return true;
                     }
-                }
-            }
-            else {
-                boolean solnFound = runBacktracking(stackNum + 1);
-                if (solnFound) {
-                    return true;
-                }
-            }
-            prospectiveSoln[stackNum] = 0;
-        }
-
-        // if 2 is available, place into prospectiveSoln and move on
-        if (isAvailable(2, stackNum)) {
-            prospectiveSoln[stackNum] = 2;
-            if (cageIsClosed(stackNum)) {
-                if (isValidArithmetic(stackNum)) {
-                    boolean solnFound = runBacktracking(stackNum + 1);
-                    if (solnFound) {
-                        return true;
-                    }
-                }
-            }
-            else {
-                boolean solnFound = runBacktracking(stackNum + 1);
-                if (solnFound) {
-                    return true;
-                }
-            }
-            prospectiveSoln[stackNum] = 0;
-        }
-
-        // if 3 is available, place into prospectiveSoln and move on
-        if (isAvailable(3, stackNum)) {
-            prospectiveSoln[stackNum] = 3;
-            if (cageIsClosed(stackNum)) {
-                if (isValidArithmetic(stackNum)) {
-                    boolean solnFound = runBacktracking(stackNum + 1);
-                    if (solnFound) {
-                        return true;
-                    }
-                }
-            }
-            else {
-                boolean solnFound = runBacktracking(stackNum + 1);
-                if (solnFound) {
-                    return true;
-                }
-            }
-            prospectiveSoln[stackNum] = 0;
-        }
-
-        // if 4 is available, place into prospectiveSoln and move on
-        if (isAvailable(4, stackNum)) {
-            prospectiveSoln[stackNum] = 4;
-            if (cageIsClosed(stackNum)) {
-                if (isValidArithmetic(stackNum)) {
-                    boolean solnFound = runBacktracking(stackNum + 1);
-                    if (solnFound) {
-                        return true;
-                    }
-                }
-            }
-            else {
-                boolean solnFound = runBacktracking(stackNum + 1);
-                if (solnFound) {
-                    return true;
                 }
             }
             prospectiveSoln[stackNum] = 0;

@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class MyFrame extends JFrame implements ActionListener {
     JPanel headerPanel;
@@ -37,11 +38,14 @@ public class MyFrame extends JFrame implements ActionListener {
 
     int identifierNum = 0;
 
+    Random random = new Random(); // to decide color (random num from 0->255)
+    static Color[][] colorGrid; // to be used in solution frame as well
+
     MyFrame() throws HeadlessException {
         //standard frame constraints
         this.setTitle("Kenken solver!");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(500,500);
+        this.setSize(700,700);
         this.setLayout(new BorderLayout(10,10));
 
         //center the JFrame
@@ -85,6 +89,7 @@ public class MyFrame extends JFrame implements ActionListener {
             n = Integer.parseInt(Objects.requireNonNull(constraintComboBox.getSelectedItem()).toString());
             buttonGrid = new JButton[n][n];
             finalCellGrid = new Cell[n][n];
+            colorGrid = new Color[n][n];
 
             mainPanel = new JPanel();
             mainPanel.setLayout(new GridLayout(n, n, 10,10));
@@ -92,7 +97,7 @@ public class MyFrame extends JFrame implements ActionListener {
 
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    JButton toAdd = new JButton("?");
+                    JButton toAdd = new JButton();
                     toAdd.addActionListener(this);
                     toAdd.setFocusable(false);
                     mainPanel.add(toAdd);
@@ -144,8 +149,16 @@ public class MyFrame extends JFrame implements ActionListener {
 
             buildCageAndCellGrid(recentlyClickedButtons, recentlyClickedPoints);
 
+            Color cageColor = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+
+            int count = 0;
+
             for (JButton button : recentlyClickedButtons) {
                 button.setEnabled(false);
+                button.setForeground(Color.BLACK);
+                button.setBackground(cageColor);
+                colorGrid[recentlyClickedPoints.get(count).getI()][recentlyClickedPoints.get(count).getJ()] = cageColor;
+                count++;
             }
 
             recentlyClickedButtons.clear();
@@ -178,6 +191,8 @@ public class MyFrame extends JFrame implements ActionListener {
                         if (inputValidation.isTextValid(text)) {
                             Point point = new Point(i, j);
                             if (inputValidation.isButtonAdjacent(point, recentlyClickedPoints)) {
+                                System.out.println(inputValidation.fontSize(n, text));
+                                buttonGrid[i][j].setFont(new Font("Consolas", Font.PLAIN, inputValidation.fontSize(n, text)));
                                 buttonGrid[i][j].setText(inputText.getText());
                                 if (!recentlyClickedPoints.contains(point)) { // to avoid duplicates in arraylist
                                     recentlyClickedButtons.add(buttonGrid[i][j]);

@@ -69,4 +69,14 @@ public class InputValidation {
         }
         return true;
     }
+
+    public int  fontSize(int n, String text) {
+        double size = -8.16667*n + 85;
+        if (text.length() > 3) {
+            size /= 2;
+        }
+        return (int) size;
+    }
+
+
 }

@@ -4,7 +4,7 @@ public class DFS {
     private int n;
     private Cell[][] cellGrid;
     private int[] prospectiveSoln;
-     int[][] solution;
+    private int[][] solution;
 
     public DFS(int n, Cell[][] cellGrid) {
         this.n = n;
@@ -17,6 +17,10 @@ public class DFS {
      * cell grid. Ex. stackNum = 0 represents top left cell, stackNum = 3 represents top right box, stackNum = 15
      * represents the bottom right box etc.
      */
+
+    public int[][] getSolution() {
+        return solution;
+    }
 
     public boolean runBacktracking(int stackNum) {
         if (stackNum == n*n) { // base case: Solution found!

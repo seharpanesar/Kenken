@@ -2,17 +2,38 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Kenken {
-    int n; // length of height/width of grid
-    ArrayList<Cage> cages = new ArrayList<>();
-    Cell[][] cellGrid = new Cell[0][];
+    private int n; // length of height/width of grid
+    private ArrayList<Cage> cages;
+    private Cell[][] cellGrid;
 
+    private boolean solutionExists = false;
+    private int[][] solution;
 
     public Kenken(String filePath) throws IOException {
         long timeS = System.currentTimeMillis();
+
+        cages = new ArrayList<>();
         parseInput(filePath);
         fillAnswerGrid();
+
         long timeE = System.currentTimeMillis();
         System.out.printf("Time: %d ms\n", timeE-timeS);
+    }
+
+    public Kenken(int n, ArrayList<Cage> cages, Cell[][] cellGrid) {
+        this.n = n;
+        this.cages = cages;
+        this.cellGrid = cellGrid;
+
+        fillAnswerGrid();
+    }
+
+    public int[][] getSolution() {
+        return solution;
+    }
+
+    public boolean solutionExists() {
+        return solutionExists;
     }
 
     private void fillAnswerGrid() {
@@ -24,14 +45,9 @@ public class Kenken {
         DFS dfs = new DFS(n, cellGrid);
         boolean solnExists = dfs.runBacktracking(0);
         if (solnExists) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    System.out.printf("%d ", dfs.solution[i][j]);
-                }
-                System.out.println();
-            }
+            solutionExists = true;
+            solution = dfs.getSolution();
         }
-
     }
 
     /* This function iterates through all cages. If all cells in a particular cage have the same value in the cannotBe list

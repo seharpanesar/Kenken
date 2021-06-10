@@ -11,7 +11,7 @@ candidates of neighboring cells. This approach seems to work well with kenkens t
 There are 2 main ways to input the kenken puzzle:
   1) GUI: Enter the targetNum and operator in the top left input box and click the buttons that make up the corresponding cage. Click "Lock" to confirm that cage. Repeat for all 
      cages. Hit compute. 
-     ![Alt text](https://github.com/seharpanesar/Kenken/ReadMePics/Capture.PNG?raw=true)
+     ![Alt text](https://github.com/seharpanesar/Kenken/blob/ReadMePics/Capture.PNG?raw=true)
      ![Alt text](https://github.com/seharpanesar/Kenken/ReadMePics/Capture1.PNG?raw=true)
      
   2) File input (more tedious): Format a txt file in the following manner. Pass the file path in Kenken constructor and run program. Solution will printed in System.out

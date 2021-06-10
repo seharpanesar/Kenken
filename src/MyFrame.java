@@ -191,7 +191,6 @@ public class MyFrame extends JFrame implements ActionListener {
                         if (inputValidation.isTextValid(text)) {
                             Point point = new Point(i, j);
                             if (inputValidation.isButtonAdjacent(point, recentlyClickedPoints)) {
-                                System.out.println(inputValidation.fontSize(n, text));
                                 buttonGrid[i][j].setFont(new Font("Consolas", Font.PLAIN, inputValidation.fontSize(n, text)));
                                 buttonGrid[i][j].setText(inputText.getText());
                                 if (!recentlyClickedPoints.contains(point)) { // to avoid duplicates in arraylist
